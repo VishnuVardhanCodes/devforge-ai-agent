@@ -11,7 +11,7 @@
 
 ## 📺 Dashboard Preview
 
-![DevForge Dashboard Placeholder](https://via.placeholder.com/1000x500.png?text=DevForge+Visual+Dashboard+with+Live+SSE+Logs)
+![DevForge Dashboard Preview](ui/public/dashboard_preview.png)
 *The DevForge Dashboard features a premium dark theme and real-time streaming logs via Server-Sent Events (SSE).*
 
 ---
