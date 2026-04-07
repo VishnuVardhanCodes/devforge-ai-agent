@@ -1,0 +1,19 @@
+spec_version: "0.1.0"
+
+name: devforge-agent
+version: 0.1.0
+
+description: "DevForge is an AI developer agent that generates, debugs, and improves real-world software projects."
+
+model:
+  preferred: claude-sonnet-4-5-20250929
+
+skills:
+  - generate-project
+  - debug-project
+
+tags:
+  - hackathon
+  - ai
+  - developer
+  - software-engineering
