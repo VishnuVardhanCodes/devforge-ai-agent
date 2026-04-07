@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevForge AI Software Factory</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0c;
+            --panel-bg: #16161d;
+            --accent-primary: #6366f1;
+            --accent-secondary: #a855f7;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --console-bg: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background-color: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            margin-bottom: 2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            color: var(--text-main);
+            padding: 1rem;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        button {
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            flex-grow: 2;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-grow: 1;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .console {
+            background-color: var(--console-bg);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            line-height: 1.5;
+            white-space: pre-wrap;
+            position: relative;
+        }
+
+        .console::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .console::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .log-entry {
+            margin-bottom: 0.25rem;
+        }
+
+        .log-info { color: #60a5fa; }
+        .log-success { color: #4ade80; }
+        .log-error { color: #f87171; }
+        .log-warning { color: #fbbf24; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .status-idle { color: var(--text-dim); }
+        .status-running { color: var(--accent-primary); box-shadow: 0 0 10px rgba(99, 102, 241, 0.2); }
+
+        footer {
+            margin-top: 3rem;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DevForge</h1>
+            <p class="subtitle">AI-Powered Software Factory & Pipeline Orchestrator</p>
+        </header>
+
+        <div class="card">
+            <label for="prompt">Generation Prompt</label>
+            <textarea id="prompt" placeholder="Describe the application you want to build...">Create a modern blog system using Next.js and Tailwind CSS. Implement a markdown-based CMS, SEO-friendly meta tags, and an automated deployment script for Vercel.</textarea>
+            
+            <div class="actions">
+                <button id="generateBtn" class="btn-primary">Generate Project</button>
+                <button id="downloadBtn" class="btn-secondary">Download Project</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div id="statusBadge" class="status-badge status-idle">System Ready</div>
+            <label>Live Pipeline Output</label>
+            <div id="console" class="console">
+<span class="log-info">[System]</span> Waiting for input...
+            </div>
+        </div>
+
+        <footer>
+            Built with ❤️ for DevForge Hackathon 2026
+        </footer>
+    </div>
+
+    <script>
+        const consoleEl = document.getElementById('console');
+        const promptEl = document.getElementById('prompt');
+        const generateBtn = document.getElementById('generateBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const statusBadge = document.getElementById('statusBadge');
+
+        // Connect to SSE for logs
+        const eventSource = new EventSource('/logs');
+        
+        eventSource.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            appendLog(data.message);
+        };
+
+        function appendLog(message) {
+            const span = document.createElement('span');
+            span.className = 'log-entry';
+            
+            // Basic log coloring
+            if (message.includes('ERROR') || message.includes('FAILED')) span.classList.add('log-error');
+            else if (message.includes('SUCCESS') || message.includes('DONE')) span.classList.add('log-success');
+            else if (message.includes('WARNING')) span.classList.add('log-warning');
+            else if (message.startsWith('🚀') || message.includes('[System]')) span.classList.add('log-info');
+
+            span.textContent = message;
+            consoleEl.appendChild(span);
+            // If the message doesn't end with a newline, it might be partial
+            if (!message.endsWith('\n')) {
+                // span.textContent = message;
+            } else {
+                // span.textContent = message;
+            }
+            
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        generateBtn.addEventListener('click', async () => {
+            const prompt = promptEl.value;
+            if (!prompt) return alert('Please enter a prompt');
+
+            generateBtn.disabled = true;
+            statusBadge.textContent = 'Running Pipeline...';
+            statusBadge.className = 'status-badge status-running';
+            consoleEl.innerHTML = '<span class="log-info">[System]</span> Initializing pipeline...\n';
+
+            try {
+                const response = await fetch('/run-pipeline', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    statusBadge.textContent = 'Generation Complete';
+                    statusBadge.className = 'status-badge status-idle';
+                    appendLog('\n✅ Project generation successful!');
+                } else {
+                    statusBadge.textContent = 'Error Occurred';
+                    statusBadge.className = 'status-badge status-idle';
+                    appendLog('\n❌ Project generation failed.');
+                }
+            } catch (error) {
+                appendLog('\n❌ Error: ' + error.message);
+                statusBadge.textContent = 'Connection Error';
+                statusBadge.className = 'status-badge status-idle';
+            } finally {
+                generateBtn.disabled = false;
+            }
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            alert('Your project is being bundled for download. This feature will be available once the generation is complete.');
+        });
+    </script>
+</body>
+</html>
