@@ -1,25 +1,25 @@
 spec_version: "0.1.0"
-
 name: devforge-agent
-version: 0.1.0
-
-description: DevForge is an AI developer agent that generates, debugs, and improves real-world software projects.
+version: "1.0.0"
+description: "AI software developer agent for the DevForge platform"
+author: "Vishnu Vardhan"
+license: "MIT"
 
 model:
-  preferred: tinyllama
-  adapter: ollama
+  preferred: tinyllama:latest
 
-skills:
-  - generate-project
-  - debug-project
-  - create-readme
-  - analyze-project
-  - test-generator
-  - deploy-project
-  - project-explainer
-  - pipeline-orchestrator
+adapter: local
+
+runtime:
+  max_turns: 20
+  temperature: 0.7
+
+compliance:
+  risk_tier: low
+  supervision:
+    human_in_the_loop: always
 
 tags:
-  - hackathon
-  - ai
-  - software-factory
+  - devforge
+  - local-only
+  - tinyllama
