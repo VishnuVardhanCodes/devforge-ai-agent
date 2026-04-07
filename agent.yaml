@@ -11,6 +11,9 @@ model:
 skills:
   - generate-project
   - debug-project
+  - create-readme
+  - analyze-project
+  - test-generator
 
 tags:
   - hackathon
