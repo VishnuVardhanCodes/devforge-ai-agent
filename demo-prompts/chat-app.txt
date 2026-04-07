@@ -1,0 +1,1 @@
+Create a Real-Time Chat Application using Socket.io, React frontend, Node.js backend, and persistent storage for message history.

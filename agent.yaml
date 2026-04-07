@@ -3,10 +3,11 @@ spec_version: "0.1.0"
 name: devforge-agent
 version: 0.1.0
 
-description: "DevForge is an AI developer agent that generates, debugs, and improves real-world software projects."
+description: DevForge is an AI developer agent that generates, debugs, and improves real-world software projects.
 
 model:
-  preferred: claude-sonnet-4-5-20250929
+  preferred: tinyllama
+  adapter: ollama
 
 skills:
   - generate-project
@@ -16,9 +17,9 @@ skills:
   - test-generator
   - deploy-project
   - project-explainer
+  - pipeline-orchestrator
 
 tags:
   - hackathon
   - ai
-  - developer
-  - software-engineering
+  - software-factory

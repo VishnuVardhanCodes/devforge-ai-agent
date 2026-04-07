@@ -1,0 +1,1 @@
+Build an E-commerce API with product catalog, shopping cart, order management, and Stripe payment integration.

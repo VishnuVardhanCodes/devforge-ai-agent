@@ -1,0 +1,12 @@
+Build a REST API Todo Application using Node.js and Express.
+
+Requirements:
+
+- CRUD operations
+- MongoDB database
+- JWT authentication
+- Proper folder structure
+- Unit tests
+- README file
+- Deployment-ready configuration
+- Explain architecture after generation

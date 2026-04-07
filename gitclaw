@@ -1,0 +1,19 @@
+#!/bin/bash
+IS_DEMO=false
+ARGS=()
+
+for arg in "$@"; do
+    if [[ "$arg" == "--demo" ]]; then
+        IS_DEMO=true
+    else
+        ARGS+=("$arg")
+    fi
+done
+
+if [ "$IS_DEMO" = true ]; then
+    export PATH=$(pwd)/mock-bin:$PATH
+else
+    export PATH=$(pwd)/node_modules/.bin:$PATH
+fi
+
+npx gitagent "${ARGS[@]}"
