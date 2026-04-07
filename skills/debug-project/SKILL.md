@@ -1,130 +1,171 @@
 ---
 name: debug-project
-description: "Analyze and fix bugs in existing software projects."
+description: "Analyze, debug, and fix errors in code projects"
 allowed-tools: Bash Read Write
-
 ---
-
 # Debug Project Skill
 
 ## Purpose
 
-This skill analyzes existing codebases and fixes errors.
+This skill analyzes code projects, detects errors, fixes bugs, and improves overall code quality.
 
-It detects runtime errors, logical bugs, and configuration issues.
-
-It improves project reliability and usability.
+The agent must behave like a senior software debugger and code reviewer.
 
 ---
 
-## Supported Debug Types
+## When This Skill Should Be Used
 
-DevForge must support fixing:
+Use this skill when:
 
-* Syntax errors
-* Runtime errors
-* Import/module errors
-* Dependency issues
-* File path errors
-* Configuration mistakes
-* Broken APIs
-* Missing files
-* Logic bugs
+- Code contains syntax errors
+- Code fails to run
+- The user requests debugging
+- The user provides broken code
+- The project has logical issues
+- Improvements are requested
 
 ---
 
-## Execution Workflow
+## Debugging Workflow
 
-When triggered:
+Follow these steps carefully:
 
-### Step 1 — Inspect Project
+### Step 1 — Read Files
 
-Read all relevant project files.
+- Read all relevant project files.
+- Identify programming language.
+- Understand project structure.
+- Detect dependencies.
 
-Focus on:
+Always begin with:
 
-* Source files
-* Config files
-* Package files
-* Error logs
-
----
-
-### Step 2 — Identify Issues
-
-Detect:
-
-* Syntax problems
-* Missing dependencies
-* Incorrect imports
-* Misconfigured settings
-* Runtime exceptions
+- main file
+- configuration files
+- error logs (if provided)
 
 ---
 
-### Step 3 — Determine Fix Strategy
+### Step 2 — Detect Errors
 
-Choose:
+Analyze the code and identify:
 
-* Code correction
-* Dependency update
-* File restructuring
-* Configuration fixes
+- Syntax errors
+- Runtime errors
+- Logical bugs
+- Missing imports
+- Incorrect variable usage
+- Infinite loops
+- Null reference issues
+- Type mismatches
+- Dependency errors
+
+Explain:
+
+- What the bug is
+- Why it happens
+- Where it occurs
 
 ---
 
-### Step 4 — Apply Fixes
+### Step 3 — Fix the Errors
 
-Modify:
+Fix issues using best practices.
 
-* Source code
-* Config files
-* Dependencies
-* Import statements
+The fix must:
 
-Ensure correctness.
+- Preserve existing logic
+- Improve readability
+- Follow language conventions
+- Avoid breaking working code
+
+Always generate:
+
+- Corrected version of the file
+- Clear fix explanation
+
+---
+
+### Step 4 — Improve Code Quality
+
+After fixing bugs:
+
+Suggest improvements such as:
+
+- Code optimization
+- Performance improvements
+- Refactoring suggestions
+- Naming improvements
+- Structure cleanup
 
 ---
 
 ### Step 5 — Validate Fix
 
-Confirm:
+After applying fixes:
 
-* Errors resolved
-* Code runs logically
-* Structure remains valid
-
----
-
-### Step 6 — Document Fix
-
-Create update notes:
-
-Include:
-
-* What was broken
-* What was fixed
-* Why it works now
+- Re-check code correctness
+- Ensure no new bugs introduced
+- Confirm dependencies exist
 
 ---
 
-## Output Requirements
+## Output Format
 
-DevForge must:
+Always produce:
 
-* Fix errors logically
-* Maintain code readability
-* Avoid introducing new bugs
-* Preserve project structure
-* Explain fixes clearly
+1. List of detected bugs
+2. Explanation of each bug
+3. Corrected code
+4. Improvements suggestion
 
 ---
 
-## Quality Standards
+## Debugging Philosophy
 
-DevForge must always:
+Always:
 
-* Diagnose before fixing
-* Apply minimal changes
-* Maintain clean code
-* Document debugging steps
+- Fix root cause
+- Avoid temporary fixes
+- Write maintainable code
+- Follow industry standards
+- Keep explanations clear
+
+---
+
+## Supported Languages
+
+This skill should support:
+
+- JavaScript
+- TypeScript
+- Python
+- C++
+- Java
+- HTML/CSS
+
+---
+
+## Error Severity Levels
+
+Classify errors as:
+
+- Critical → prevents execution
+- Major → breaks functionality
+- Minor → reduces performance
+- Suggestion → improvement only
+
+---
+
+## Safety Rules
+
+Never:
+
+- Delete working code unnecessarily
+- Introduce new errors
+- Ignore detected issues
+- Return partial fixes
+
+Always:
+
+- Provide complete corrected code
+- Explain fixes clearly
