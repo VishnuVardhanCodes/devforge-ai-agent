@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@open-gitagent/gitagent": "^0.2.0"
+    "@open-gitagent/gitagent": "^0.2.0",
+    "adm-zip": "^0.5.17"
   }
 }

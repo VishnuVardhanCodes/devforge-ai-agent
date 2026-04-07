@@ -3,10 +3,10 @@ name: pipeline-orchestrator
 description: "Orchestrates multiple skills into a full project lifecycle"
 allowed-tools: Bash Read Write
 ---
+
 # Pipeline Orchestrator
 
-This skill coordinates multiple DevForge skills
-to build a complete software lifecycle.
+This skill coordinates multiple DevForge skills to build a complete software lifecycle.
 
 Steps:
 
@@ -14,11 +14,12 @@ Steps:
 2. Run analyze-project
 3. Run create-readme
 4. Run test-generator
-5. Run debug-project (if errors found)
+5. Run debug-project
 6. Run project-explainer
 7. Run deploy-project
 
+Ensure each step executes sequentially.
+
 Output:
 
-A fully working, documented,
-tested, and deployable project.
+A fully working, documented, tested, and deployable project.

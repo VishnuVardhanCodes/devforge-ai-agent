@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const { spawn } = require('child_process');
 const path = require('path');
+const AdmZip = require('adm-zip');
+const fs = require('fs');
 
 const app = express();
 app.use(cors());
@@ -74,6 +76,26 @@ app.get('/logs', (req, res) => {
     req.on('close', () => {
         clients = clients.filter(c => c.id !== clientId);
     });
+});
+
+app.get('/download-project', (req, res) => {
+    try {
+        const outputDir = path.join(__dirname, '..', 'demo-output');
+        if (!fs.existsSync(outputDir)) {
+            return res.status(404).send('demo-output folder not found.');
+        }
+
+        const zip = new AdmZip();
+        zip.addLocalFolder(outputDir);
+        const zipBuffer = zip.toBuffer();
+
+        res.set('Content-Type', 'application/zip');
+        res.set('Content-Disposition', 'attachment; filename="generated-project.zip"');
+        res.send(zipBuffer);
+    } catch (err) {
+        console.error('Error creating zip:', err);
+        res.status(500).send('Failed to create zip file.');
+    }
 });
 
 const PORT = 3000;
