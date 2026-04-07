@@ -1,25 +1,12 @@
 spec_version: "0.1.0"
+
 name: devforge-agent
-version: "1.0.0"
-description: "AI software developer agent for the DevForge platform"
-author: "Vishnu Vardhan"
-license: "MIT"
 
-model:
-  preferred: tinyllama:latest
+version: "0.2.0"
 
-adapter: local
+description: "AI agent that generates and debugs full-stack applications"
 
-runtime:
-  max_turns: 20
-  temperature: 0.7
-
-compliance:
-  risk_tier: low
-  supervision:
-    human_in_the_loop: always
-
-tags:
-  - devforge
-  - local-only
-  - tinyllama
+skills:
+  - generate-node-api
+  - generate-react-app
+  - debug-project

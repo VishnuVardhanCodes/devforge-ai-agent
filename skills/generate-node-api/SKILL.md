@@ -1,5 +1,5 @@
 ---
-name: generate-project
+name: generate-node-api
 description: "Generate full real-world software project structures from user prompts."
 allowed-tools: Bash Read Write
 ---
