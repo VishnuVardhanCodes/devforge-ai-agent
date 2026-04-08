@@ -181,7 +181,7 @@ app.post('/api/run-project', (req, res) => {
     let cmd, args;
     if (type === 'react') {
       cmd = 'npm';
-      args = ['run', 'dev', '--', '--port', port.toString()];
+      args = ['run', 'dev', '--', '--port', port.toString(), '--host'];
     } else {
       // Node project
       const pkg = JSON.parse(fs.readFileSync(path.join(projPath, 'package.json'), 'utf8'));
@@ -206,8 +206,8 @@ app.post('/api/run-project', (req, res) => {
       log(clean);
       
       // Auto-detect readiness and URL
-      if (clean.includes('Local:') || clean.includes('http://localhost:') || clean.includes('ready in')) {
-         const match = clean.match(/http:\/\/localhost:(\d+)/);
+      if (clean.includes('Local:') || clean.includes('http://localhost:') || clean.includes('http://127.0.0.1:') || clean.includes('ready in')) {
+         const match = clean.match(/http:\/\/(?:localhost|127\.0\.0\.1):(\d+)/);
          if (match) {
            activeProcesses[projectName].port = match[1];
            activeProcesses[projectName].url = `http://localhost:${match[1]}`;
