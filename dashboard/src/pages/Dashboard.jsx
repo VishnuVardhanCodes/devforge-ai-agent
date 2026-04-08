@@ -45,10 +45,15 @@ const Dashboard = () => {
     }
   };
 
-  const handleSelectProject = (project) => {
+  const handleSelectProject = (project, shouldRun = true) => {
     setSelectedProject(project);
     setFileContent(null);
+    setRunningProjectUrl(null); // Clear preview when switching or before auto-run
     fetchFileTree(project);
+    
+    if (shouldRun) {
+      handleRunProject(project.name);
+    }
   };
 
   const handleFileSelect = async (file) => {
@@ -130,6 +135,8 @@ const Dashboard = () => {
     setFileContent(null);
     setRunningProjectUrl(null);
     setLogs([]);
+    setResult(null);
+    setLoading(false);
   };
 
   const handleGenerate = async (prompt) => {
@@ -175,8 +182,7 @@ const Dashboard = () => {
                 // Auto-run the latest project
                 if (projectsData.length > 0) {
                   const latest = projectsData[0]; 
-                  handleSelectProject(latest);
-                  handleRunProject(latest.name);
+                  handleSelectProject(latest, true);
                 }
               }
             } catch (e) {

@@ -106,8 +106,10 @@ function discoverProjects() {
       };
     });
 
-  fs.writeFileSync(PROJECTS_FILE, JSON.stringify(projects, null, 2));
-  return projects;
+  const sortedProjects = projects.sort((a, b) => new Date(b.created) - new Date(a.created));
+
+  fs.writeFileSync(PROJECTS_FILE, JSON.stringify(sortedProjects, null, 2));
+  return sortedProjects;
 }
 
 app.get('/api/projects', (req, res) => {
@@ -184,16 +186,26 @@ app.post('/api/run-project', (req, res) => {
     const child = spawn(cmd, args, { cwd: projPath, shell: true });
     activeProcesses[projectName] = { child, port, type, url };
 
+    // Improved startup detection
+    let urlSent = false;
+    const sendUrl = () => {
+      if (urlSent) return;
+      urlSent = true;
+      res.write(`data: ${JSON.stringify({ type: 'url', url: activeProcesses[projectName].url })}\n\n`);
+    };
+
     child.stdout.on('data', (data) => {
       const clean = stripAnsi(data.toString());
       log(clean);
-      // Auto-detect port if it changes (simple check)
-      if (clean.includes('localhost:')) {
-         const match = clean.match(/localhost:(\d+)/);
+      
+      // Auto-detect readiness and URL
+      if (clean.includes('Local:') || clean.includes('http://localhost:') || clean.includes('ready in')) {
+         const match = clean.match(/http:\/\/localhost:(\d+)/);
          if (match) {
            activeProcesses[projectName].port = match[1];
            activeProcesses[projectName].url = `http://localhost:${match[1]}`;
          }
+         sendUrl();
       }
     });
 
@@ -204,10 +216,8 @@ app.post('/api/run-project', (req, res) => {
       delete activeProcesses[projectName];
     });
 
-    // Send the URL once we think it's started
-    setTimeout(() => {
-      res.write(`data: ${JSON.stringify({ type: 'url', url: activeProcesses[projectName].url })}\n\n`);
-    }, 2000);
+    // Fallback: send URL anyway after 10 seconds if no signal detected
+    setTimeout(sendUrl, 10000);
   };
 
   if (runInstall) {
