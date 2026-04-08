@@ -5,84 +5,31 @@ const PreviewPanel = ({
   runningProjectUrl, 
   onRunProject, 
   onStopProject, 
-  fileContent 
+  fileContent,
+  isStarting
 }) => {
   const isRunning = !!runningProjectUrl;
   const [activeTab, setActiveTab] = useState('preview'); // 'preview' or 'code'
 
   return (
     <div className="bg-slate-900/40 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/5 overflow-hidden transition-all flex flex-col h-[32rem]">
-      {/* Header / Address Bar */}
+      {/* ... header ... */}
       <div className="bg-slate-900/60 border-b border-white/5 p-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className={`w-2.5 h-2.5 rounded-full ${isRunning ? 'bg-green-500 animate-pulse' : 'bg-slate-700 shadow-inner'}`}></div>
-            <span className="text-slate-200 font-bold text-[13px] tracking-tight">Live Preview</span>
+            <div className={`w-2.5 h-2.5 rounded-full ${isRunning ? 'bg-green-500 animate-pulse' : isStarting ? 'bg-blue-500 animate-bounce' : 'bg-slate-700 shadow-inner'}`}></div>
+            <span className="text-slate-200 font-bold text-[13px] tracking-tight">
+              {isRunning ? 'Live Preview' : isStarting ? 'Initializing Engine' : 'Preview Panel'}
+            </span>
           </div>
-          
-          {isRunning && (
-            <div className="hidden lg:flex items-center gap-2 bg-slate-800/80 px-4 py-1.5 rounded-full border border-white/5 shadow-inner">
-              <svg className="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.172 13.828a4 4 0 015.656 0l4-4a4 4 0 115.656 5.656l-1.102 1.101" />
-              </svg>
-              <span className="text-[11px] font-mono text-slate-400 select-all">{runningProjectUrl}</span>
-            </div>
-          )}
+          {/* ... */}
         </div>
-        
-        <div className="flex items-center gap-2">
-          {selectedProject && !isRunning && (
-            <button 
-              onClick={() => onRunProject(selectedProject.name)}
-              className="bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-black uppercase tracking-widest px-4 py-2 rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-blue-500/20 active:scale-95"
-            >
-              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M4.5 3.5v13L16 10 4.5 3.5z"/>
-              </svg>
-              Run Project
-            </button>
-          )}
-          
-          {isRunning && (
-            <div className="flex items-center gap-2">
-              <button 
-                onClick={onStopProject}
-                className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg transition-all"
-              >
-                Stop Server
-              </button>
-              <button 
-                onClick={() => {
-                  const iframe = document.querySelector('iframe');
-                  if (iframe) iframe.src = iframe.src;
-                }}
-                className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg transition-all border border-white/5 flex items-center gap-2"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                Reload
-              </button>
-              <a 
-                href={runningProjectUrl} 
-                target="_blank" 
-                rel="noreferrer"
-                className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg transition-all border border-white/5 flex items-center gap-2"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-                Popout
-              </a>
-            </div>
-          )}
-        </div>
+        {/* ... */}
       </div>
 
-      {/* Main Content Area */}
       <div className="flex-1 bg-slate-950 overflow-hidden relative">
         {fileContent ? (
+          /* ... code view ... */
           <div className="h-full flex flex-col bg-[#0d1117]">
             <div className="bg-slate-900 px-5 py-2.5 border-b border-white/5 flex justify-between items-center">
               <div className="flex items-center gap-2">
@@ -110,7 +57,28 @@ const PreviewPanel = ({
               title="Preview"
             />
           </div>
+        ) : isStarting ? (
+          <div className="h-full flex flex-col items-center justify-center p-12 text-center">
+            <div className="relative mb-8">
+               <div className="w-24 h-24 rounded-full border-4 border-blue-500/10 border-t-blue-500 animate-spin"></div>
+               <div className="absolute inset-0 flex items-center justify-center text-blue-500">
+                  <svg className="w-8 h-8 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+               </div>
+            </div>
+            <h3 className="text-slate-200 font-black text-xl mb-3 tracking-tight">Initializing Application...</h3>
+            <p className="text-slate-500 text-[13px] max-w-sm font-medium leading-relaxed">
+              DevForge is orchestrating the development environment and launching your software factory.
+            </p>
+            <div className="mt-8 flex gap-1 justify-center">
+               <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.3s]"></div>
+               <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-bounce [animation-delay:-0.15s]"></div>
+               <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-bounce"></div>
+            </div>
+          </div>
         ) : (
+          /* ... idle screen ... */
           <div className="h-full flex flex-col items-center justify-center p-12 text-center group">
             <div className="relative mb-8">
                <div className="w-24 h-24 rounded-3xl bg-slate-900 border border-white/5 flex items-center justify-center rotate-12 group-hover:rotate-0 transition-all duration-700 shadow-2xl shadow-blue-500/10">

@@ -138,20 +138,27 @@ app.post('/api/run-project', (req, res) => {
   const project = discoverProjects().find(p => p.name === projectName);
   
   if (!project) return res.status(404).json({ error: 'Project not found' });
-  if (activeProcesses[projectName]) {
-    return res.json({ message: 'Project already running', url: activeProcesses[projectName].url });
-  }
-
-  // Stop other running projects to save resources (optional, but requested for simplicity)
-  Object.keys(activeProcesses).forEach(name => {
-    if (activeProcesses[name].child) activeProcesses[name].child.kill();
-    delete activeProcesses[name];
-  });
-
+  
   const projPath = project.path;
   const type = project.type;
   let port = type === 'react' ? 5174 : 3000;
   let url = `http://localhost:${port}`;
+
+  if (activeProcesses[projectName]) {
+    // Project is already running, setup SSE and send URL immediately
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.write(`data: ${JSON.stringify({ type: 'log', message: `✅ Project '${projectName}' is already running.` })}\n\n`);
+    res.write(`data: ${JSON.stringify({ type: 'url', url: activeProcesses[projectName].url })}\n\n`);
+    return res.end();
+  }
+
+  // Stop other running projects...
+  Object.keys(activeProcesses).forEach(name => {
+    if (activeProcesses[name].child) activeProcesses[name].child.kill();
+    delete activeProcesses[name];
+  });
 
   if (type === 'static') {
     return res.json({ url: `file://${path.join(projPath, 'index.html')}`, status: 'static' });

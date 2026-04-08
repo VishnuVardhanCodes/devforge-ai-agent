@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [runningProjectUrl, setRunningProjectUrl] = useState(null);
   const [fileContent, setFileContent] = useState(null);
+  const [isStarting, setIsStarting] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -70,6 +71,7 @@ const Dashboard = () => {
     setLogs(prev => [...prev, `⚡ Starting project: ${projectName}...`]);
     setFileContent(null);
     setRunningProjectUrl(null);
+    setIsStarting(true);
 
     try {
       const response = await fetch('/api/run-project', {
@@ -78,7 +80,10 @@ const Dashboard = () => {
         body: JSON.stringify({ projectName }),
       });
 
-      if (!response.body) return;
+      if (!response.body) {
+        setIsStarting(false);
+        return;
+      }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
@@ -102,6 +107,7 @@ const Dashboard = () => {
               } else if (json.type === 'url') {
                 setRunningProjectUrl(json.url);
                 setLogs(prev => [...prev, `🚀 Project running at: ${json.url}`]);
+                setIsStarting(false);
               }
             } catch (e) {
               // skip malformed chunk
@@ -111,6 +117,7 @@ const Dashboard = () => {
       }
     } catch (err) {
       setLogs(prev => [...prev, `❌ Run Error: ${err.message}`]);
+      setIsStarting(false);
     }
   };
 
@@ -244,6 +251,7 @@ const Dashboard = () => {
                   onRunProject={handleRunProject}
                   onStopProject={handleStopProject}
                   fileContent={fileContent}
+                  isStarting={isStarting}
                 />
               </div>
               
