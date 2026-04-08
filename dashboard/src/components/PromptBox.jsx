@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 
-const PromptBox = ({ onGenerate }) => {
+const PromptBox = ({ onGenerate, loading }) => {
   const [prompt, setPrompt] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
 
   const handleGenerate = () => {
-    if (!prompt.trim()) return;
-    setIsGenerating(true);
+    if (!prompt.trim() || loading) return;
     onGenerate(prompt);
-    setTimeout(() => setIsGenerating(false), 3000);
   };
 
   return (
@@ -26,10 +23,10 @@ const PromptBox = ({ onGenerate }) => {
         </button>
         <button 
           onClick={handleGenerate}
-          disabled={isGenerating}
+          disabled={loading}
           className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white font-medium hover:from-green-400 hover:to-emerald-500 shadow-lg shadow-green-500/20 transition-all flex items-center gap-2 disabled:opacity-70"
         >
-          {isGenerating ? (
+          {loading ? (
             <>
               <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -43,7 +40,7 @@ const PromptBox = ({ onGenerate }) => {
         </button>
       </div>
 
-      {isGenerating && (
+      {loading && (
         <div className="mt-4 h-1 w-full bg-slate-700 rounded-full overflow-hidden">
           <div className="h-full bg-green-500 animate-pulse transition-all duration-1000 ease-in-out" style={{ width: '100%' }}></div>
         </div>

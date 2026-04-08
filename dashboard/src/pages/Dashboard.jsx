@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Navbar from '../components/Navbar';
 import PromptBox from '../components/PromptBox';
 import FileExplorer from '../components/FileExplorer';
@@ -8,25 +8,66 @@ import PreviewPanel from '../components/PreviewPanel';
 const Dashboard = () => {
   const [logs, setLogs] = useState([]);
   const [result, setResult] = useState(null);
+  const [fileTree, setFileTree] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleGenerate = (prompt) => {
-    setLogs((prev) => [...prev, `🚀 Received prompt: "${prompt}"`, '▶ Invoking pipeline-orchestrator...']);
+  const fetchFileTree = async () => {
+    try {
+      const res = await fetch('/api/files');
+      const data = await res.json();
+      setFileTree(data);
+    } catch (err) {
+      console.error('Failed to fetch file tree', err);
+    }
+  };
+
+  const handleGenerate = async (prompt) => {
+    setLogs([`🚀 Received prompt: "${prompt}"`, '▶ Invoking pipeline-orchestrator...']);
     setResult(null);
+    setFileTree([]);
+    setLoading(true);
 
-    // Mock realistic progression
-    setTimeout(() => {
-      setLogs((prev) => [...prev, '▶ [1/7] generate-project: Creating files...']);
-    }, 600);
-    setTimeout(() => {
-      setLogs((prev) => [...prev, '  ∟ Created: package.json', '  ∟ Created: src/index.js']);
-    }, 1200);
-    setTimeout(() => {
-      setLogs((prev) => [...prev, '▶ [4/7] test-generator: Validating files...']);
-    }, 2000);
-    setTimeout(() => {
-      setLogs((prev) => [...prev, '✅ All pipeline steps completed successfully!']);
-      setResult({ message: 'DevForge API running successfully' });
-    }, 3000);
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split('\n\n');
+        buffer = parts.pop();
+
+        for (const part of parts) {
+          if (part.startsWith('data:')) {
+            try {
+              const json = JSON.parse(part.slice(5).trim());
+              if (json.type === 'log') {
+                const lines = json.message.split('\n').filter(l => l.trim());
+                setLogs(prev => [...prev, ...lines]);
+              } else if (json.type === 'done') {
+                setResult({ message: json.code === 0 ? '✅ DevForge pipeline completed successfully!' : `❌ Pipeline exited with code ${json.code}` });
+                await fetchFileTree();
+                setLoading(false);
+              }
+            } catch (e) {
+              // skip malformed chunk
+            }
+          }
+        }
+      }
+    } catch (err) {
+      setLogs(prev => [...prev, `❌ Error: ${err.message}`]);
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,12 +75,12 @@ const Dashboard = () => {
       <Navbar />
       
       <main className="flex-1 max-w-7xl w-full mx-auto p-6 flex flex-col">
-        <PromptBox onGenerate={handleGenerate} />
+        <PromptBox onGenerate={handleGenerate} loading={loading} />
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* File Explorer */}
           <div className="lg:col-span-3">
-            <FileExplorer />
+            <FileExplorer fileTree={fileTree} />
           </div>
           
           {/* Terminal */}
