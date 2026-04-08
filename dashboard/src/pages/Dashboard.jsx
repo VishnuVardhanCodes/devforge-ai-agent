@@ -124,6 +124,14 @@ const Dashboard = () => {
     }
   };
 
+  const handleNewProject = () => {
+    setSelectedProject(null);
+    setFileTree([]);
+    setFileContent(null);
+    setRunningProjectUrl(null);
+    setLogs([]);
+  };
+
   const handleGenerate = async (prompt) => {
     setLogs([`🚀 Received prompt: "${prompt}"`, '▶ Invoking pipeline-orchestrator...']);
     setResult(null);
@@ -200,6 +208,7 @@ const Dashboard = () => {
             projects={projects} 
             selectedProject={selectedProject} 
             onSelectProject={handleSelectProject} 
+            onNewProject={handleNewProject}
           />
         </aside>
 
