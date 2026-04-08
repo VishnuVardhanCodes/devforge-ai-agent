@@ -166,7 +166,6 @@ const Dashboard = () => {
                 
                 // Auto-run the latest project
                 if (projectsData.length > 0) {
-                  // Sort by latest created if possible, but for now we just take the first one
                   const latest = projectsData[0]; 
                   handleSelectProject(latest);
                   handleRunProject(latest.name);
@@ -185,12 +184,18 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col font-sans text-slate-200">
+    <div className="min-h-screen bg-[#050505] flex flex-col font-sans text-slate-200 overflow-hidden">
+      {/* Background Decor */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 blur-[120px] rounded-full"></div>
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-indigo-600/10 blur-[120px] rounded-full"></div>
+      </div>
+
       <Navbar />
       
-      <main className="flex-1 w-full mx-auto p-4 flex gap-6 overflow-y-auto custom-scrollbar">
+      <main className="flex-1 w-full flex p-6 gap-6 overflow-hidden relative z-10">
         {/* Left Sidebar - Project List */}
-        <aside className="w-64 hidden lg:block flex-shrink-0">
+        <aside className="w-80 hidden lg:flex flex-col flex-shrink-0 animate-in fade-in slide-in-from-left-4 duration-500">
           <ProjectSidebar 
             projects={projects} 
             selectedProject={selectedProject} 
@@ -199,14 +204,14 @@ const Dashboard = () => {
         </aside>
 
         {/* Main Workspace */}
-        <div className="flex-1 flex flex-col gap-6">
-          <div className="flex-shrink-0">
+        <div className="flex-1 flex flex-col gap-6 overflow-hidden">
+          <div className="flex-shrink-0 animate-in fade-in slide-in-from-top-4 duration-700 delay-100">
             <PromptBox onGenerate={handleGenerate} loading={loading} />
           </div>
           
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
             {/* File Explorer (Col 1-3) */}
-            <div className="lg:col-span-3 overflow-hidden">
+            <div className="lg:col-span-3 flex flex-col overflow-hidden">
               <FileExplorer 
                 fileTree={fileTree} 
                 projectName={selectedProject?.name}
@@ -217,7 +222,7 @@ const Dashboard = () => {
             
             {/* Split View: Preview (Col 4-12) */}
             <div className="lg:col-span-9 flex flex-col gap-6 overflow-hidden">
-              <div className="flex-1 overflow-hidden">
+              <div className="flex-1 min-h-0 overflow-hidden">
                 <PreviewPanel 
                   selectedProject={selectedProject}
                   runningProjectUrl={runningProjectUrl}
@@ -227,15 +232,41 @@ const Dashboard = () => {
                 />
               </div>
               
-              <div className="h-48 flex-shrink-0 overflow-hidden">
+              <div className="flex-shrink-0 overflow-hidden">
                 <Terminal logs={logs} />
               </div>
             </div>
           </div>
         </div>
       </main>
+      
+      {/* Utility Styles */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 5px;
+          height: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+        .animate-shimmer {
+          animation: shimmer 3s infinite linear;
+        }
+      `}} />
     </div>
   );
 };
 
 export default Dashboard;
+
