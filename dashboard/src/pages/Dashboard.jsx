@@ -188,7 +188,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-slate-900 flex flex-col font-sans text-slate-200">
       <Navbar />
       
-      <main className="flex-1 w-full mx-auto p-4 flex gap-6 overflow-hidden">
+      <main className="flex-1 w-full mx-auto p-4 flex gap-6 overflow-y-auto custom-scrollbar">
         {/* Left Sidebar - Project List */}
         <aside className="w-64 hidden lg:block flex-shrink-0">
           <ProjectSidebar 
@@ -199,12 +199,12 @@ const Dashboard = () => {
         </aside>
 
         {/* Main Workspace */}
-        <div className="flex-1 flex flex-col gap-6 overflow-hidden">
+        <div className="flex-1 flex flex-col gap-6">
           <div className="flex-shrink-0">
             <PromptBox onGenerate={handleGenerate} loading={loading} />
           </div>
           
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 overflow-hidden">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* File Explorer (Col 1-3) */}
             <div className="lg:col-span-3 overflow-hidden">
               <FileExplorer 
